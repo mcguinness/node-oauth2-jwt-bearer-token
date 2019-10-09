@@ -8,13 +8,13 @@ const path = require('path');
 const fs = require('fs');
 const JwtTokenHandler = require('../lib/jwt-token-handler');
 
-describe('JwtTokenHandler', function() {
+describe('JwtTokenHandler', function () {
   const baseUrl = 'http://authorization-server';
   const jwksPath = '/oauth2/v1/keys';
   const tokens = {
     id_token: {
       jwt: 'eyJhbGciOiJSUzI1NiIsImtpZCI6IkM0TmdMMlFIVHpvRVJfbzEzTGJza2pYWk1RV1FoUVRZZzNvdFBHR1pHWFkifQ.eyJzdWIiOiIwMHU1aXZzdnI1MzFVNWRoajBoNyIsIm5hbWUiOiJLYXJsIE1jR3Vpbm5lc3MiLCJsb2NhbGUiOiJlbi1VUyIsImVtYWlsIjoia21jZ3Vpbm5lc3NAb2t0YS5jb20iLCJ2ZXIiOjEsImlzcyI6Imh0dHBzOi8vZXhhbXBsZS5va3RhcHJldmlldy5jb20iLCJhdWQiOiJBTlJaaHlEaDhIQkZONWFiTjZSZyIsImlhdCI6MTQ2MDMxMzUxMiwiZXhwIjoxNDYwMzE3MTEyLCJqdGkiOiJGekFqdS14RVhaa2ZWSTJudmstdiIsImFtciI6WyJwd2QiXSwiaWRwIjoiMDBvNWl2c3ZxbEpTSlZCbWUwaDciLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJrbWNndWlubmVzc0Bva3RhLmNvbSIsImdpdmVuX25hbWUiOiJLYXJsIiwiZmFtaWx5X25hbWUiOiJNY0d1aW5uZXNzIiwiem9uZWluZm8iOiJBbWVyaWNhL0xvc19BbmdlbGVzIiwidXBkYXRlZF9hdCI6MTQ1NzgzNDk1MiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF1dGhfdGltZSI6MTQ2MDMxMzUxMn0.cxx2NHLcN8-Fabbw3GfcfQYJut0s6dvhPBokvL2eZlXEz1PlC6uronOT55E8qLf4PgQbuSqiW9HQHtp6ollRGJzPGzjEvociHh9LnHmK8p2EUBS_JcddXuH2UxYbCFo45lp-wMhHUEQGaQaMzuNscIju2Xy93Dv9rCsl826hE1vNZAoiYpvLBlGF2rUE_w4RmZSIzbDYBe5ueBtTzM1KaLgIXExNXqHhsyHv2MZV5Mz0UUcg66P2HwEgDWoHHZQhx11u57-3Bd_S1PxIcM-EAtMhnj0onr588muaACgeVAh8P3-kK3MvzqhHBIMQCwUbmDO4b5DYcj3xaYVHq62Raw',
-      issuer:'https://example.oktapreview.com',
+      issuer: 'https://example.oktapreview.com',
       kid: 'C4NgL2QHTzoER_o13LbskjXZMQWQhQTYg3otPGGZGXY',
       expiresAt: 1460313512,
       audience: 'ANRZhyDh8HBFN5abN6Rg',
@@ -31,23 +31,23 @@ describe('JwtTokenHandler', function() {
       subject: '00u5ivsvr531U5dhj0h7',
       email: 'kmcguinness@okta.com',
       jwks: fs.readFileSync(path.join(__dirname, 'keys.json'), 'utf8')
-    },
+    }
   };
   const scopesClaimName = 'scp';
 
-  describe('#JwtTokenHandler()', function() {
+  describe('#JwtTokenHandler()', function () {
     const issuer = 'https://example.oktapreview.com';
     const audience = 'urn:example:audience';
     var handler;
 
-    beforeEach(function() {
+    beforeEach(function () {
       nock.cleanAll();
       nock(baseUrl)
         .get(jwksPath)
         .replyWithFile(200, path.join(__dirname, 'keys.json'));
     });
 
-    it('should require jwks or jwksUrl option', function() {
+    it('should require jwks or jwksUrl option', function () {
       var err;
       try {
         handler = new JwtTokenHandler({
@@ -60,7 +60,7 @@ describe('JwtTokenHandler', function() {
       expect(err).not.to.be.null;
     });
 
-    it('should require a jwks with valid RSA signature key', function() {
+    it('should require a jwks with valid RSA signature key', function () {
       var err;
       try {
         handler = new JwtTokenHandler({
@@ -74,7 +74,7 @@ describe('JwtTokenHandler', function() {
       expect(err).not.to.be.null;
     });
 
-    it('should require a valid jwks', function() {
+    it('should require a valid jwks', function () {
       var err;
       try {
         handler = new JwtTokenHandler({
@@ -88,7 +88,7 @@ describe('JwtTokenHandler', function() {
       expect(err).not.to.be.null;
     });
 
-    it('should require at least one jwk', function() {
+    it('should require at least one jwk', function () {
       var err;
       try {
         handler = new JwtTokenHandler({
@@ -102,13 +102,13 @@ describe('JwtTokenHandler', function() {
       expect(err).not.to.be.null;
     });
 
-    Object.keys(tokens).forEach(function(tokenType) {
+    Object.keys(tokens).forEach(function (tokenType) {
 
-      describe(tokenType, function() {
+      describe(tokenType, function () {
 
         const token = tokens[tokenType];
 
-        beforeEach(function() {
+        beforeEach(function () {
           handler = new JwtTokenHandler({
             issuer: token.issuer,
             audience: token.audience,
@@ -116,7 +116,7 @@ describe('JwtTokenHandler', function() {
           });
         });
 
-        it('should require issuer option', function() {
+        it('should require issuer option', function () {
           var err;
           try {
             handler = new JwtTokenHandler({
@@ -129,7 +129,7 @@ describe('JwtTokenHandler', function() {
           expect(err).not.to.be.null;
         });
 
-        it('should require audience option', function() {
+        it('should require audience option', function () {
           var err;
           try {
             handler = new JwtTokenHandler({
@@ -142,19 +142,19 @@ describe('JwtTokenHandler', function() {
           expect(err).not.to.be.null;
         });
 
-        it('should have issuer property as option value', function() {
+        it('should have issuer property as option value', function () {
           expect(handler.issuer).to.be.equal(token.issuer);
         });
 
-        it('should have audience property as option value', function() {
+        it('should have audience property as option value', function () {
           expect(handler.audience).to.be.equal(token.audience);
         });
 
-        it('should have realm property as default value', function() {
+        it('should have realm property as default value', function () {
           expect(handler.realm).to.be.equal(token.audience);
         });
 
-        it('should have realm property as option value', function() {
+        it('should have realm property as option value', function () {
           handler = new JwtTokenHandler({
             issuer: token.issuer,
             audience: token.audience,
@@ -164,7 +164,7 @@ describe('JwtTokenHandler', function() {
           expect(handler.realm).to.be.equal('TEST');
         });
 
-        it('should have scopes property as option value', function() {
+        it('should have scopes property as option value', function () {
           handler = new JwtTokenHandler({
             issuer: token.issuer,
             audience: token.audience,
@@ -174,7 +174,7 @@ describe('JwtTokenHandler', function() {
           expect(handler.scopes).to.deep.equal(['test:scope']);
         });
 
-        it('should have scopesClaimName property as option value', function() {
+        it('should have scopesClaimName property as option value', function () {
           handler = new JwtTokenHandler({
             issuer: token.issuer,
             audience: token.audience,
@@ -184,12 +184,12 @@ describe('JwtTokenHandler', function() {
           expect(handler.scopesClaimName).to.be.equal('test');
         });
 
-        it('should have scopesClaimName property as default value', function() {
+        it('should have scopesClaimName property as default value', function () {
           expect(handler.scopesClaimName).to.be.equal('scope');
         });
 
-        it('should have jwks property with keys', function(done) {
-          handler.getSigningKeys(function(err, keys) {
+        it('should have jwks property with keys', function (done) {
+          handler.getSigningKeys(function (err, keys) {
             expect(err).to.be.null;
             expect(keys).to.be.a('array');
             expect(keys.length).to.be.equal(2);
@@ -199,7 +199,7 @@ describe('JwtTokenHandler', function() {
           })
         });
 
-        it('should have jwks property with keys from both JWKS resolvers', function(done) {
+        it('should have jwks property with keys from both JWKS resolvers', function (done) {
           nock.cleanAll();
           nock(baseUrl)
             .get(jwksPath)
@@ -224,7 +224,7 @@ describe('JwtTokenHandler', function() {
             jwksUrl: baseUrl + jwksPath
           });
 
-          handler.getSigningKeys(function(err, keys) {
+          handler.getSigningKeys(function (err, keys) {
             expect(err).to.be.null;
             expect(keys).to.be.a('array');
             expect(keys.length).to.be.equal(3);
@@ -234,28 +234,28 @@ describe('JwtTokenHandler', function() {
           })
         });
 
-        it('should have clockTolerance property as default value', function() {
+        it('should have clockTolerance property as default value', function () {
           expect(handler.clockTolerance).to.be.equal(5);
         });
 
-        it('should have algorithms property as default value', function() {
+        it('should have algorithms property as default value', function () {
           expect(handler.algorithms).to.deep.equal(['RS256', 'RS384', 'RS512']);
         });
       });
     });
   });
 
-  describe('#verifyRequest()', function() {
+  describe('#verifyRequest()', function () {
 
-    Object.keys(tokens).forEach(function(tokenType) {
+    Object.keys(tokens).forEach(function (tokenType) {
 
-      describe(tokenType, function() {
+      describe(tokenType, function () {
 
         const token = tokens[tokenType];
         var clock;
         var handler;
 
-        beforeEach(function() {
+        beforeEach(function () {
           clock = sinon.useFakeTimers((token.expiresAt - 60) * 1000);
           nock.cleanAll();
           nock(baseUrl)
@@ -270,12 +270,12 @@ describe('JwtTokenHandler', function() {
         });
 
         afterEach(function () {
-          try { clock.restore(); } catch (e) {}
+          try { clock.restore(); } catch (e) { }
         });
 
-        describe('with valid token sent via authorization header', function() {
+        describe('with valid token sent via authorization header', function () {
 
-          it('should have subject, issuer, and audience claims', function(done) {
+          it('should have subject, issuer, and audience claims', function (done) {
             handler.verifyRequest({
               headers: {
                 authorization: 'BEARER ' + token.jwt
@@ -283,24 +283,24 @@ describe('JwtTokenHandler', function() {
             }, {
               methods: [JwtTokenHandler.methods.HEADER]
             },
-            function(err, claims) {
-              expect(err).to.be.null;
-              expect(claims.sub).to.equal(token.subject);
-              expect(claims.iss).to.equal(token.issuer);
-              expect(claims.aud).to.equal(token.audience);
-              done();
-            });
+              function (err, claims) {
+                expect(err).to.be.null;
+                expect(claims.sub).to.equal(token.subject);
+                expect(claims.iss).to.equal(token.issuer);
+                expect(claims.aud).to.equal(token.audience);
+                done();
+              });
           });
         });
 
-        describe('with valid token sent via query parameter', function() {
+        describe('with valid token sent via query parameter', function () {
 
-          it('should have subject, issuer, and audience claims', function(done) {
+          it('should have subject, issuer, and audience claims', function (done) {
             handler.verifyRequest({
               query: {
                 access_token: token.jwt
               }
-            }, function(err, claims) {
+            }, function (err, claims) {
               expect(err).to.be.null;
               expect(claims.sub).to.equal(token.subject);
               expect(claims.iss).to.equal(token.issuer);
@@ -311,9 +311,9 @@ describe('JwtTokenHandler', function() {
 
         });
 
-        describe('with valid token sent via body parameter', function() {
+        describe('with valid token sent via body parameter', function () {
 
-          it('should have subject, issuer, and audience claims', function(done) {
+          it('should have subject, issuer, and audience claims', function (done) {
             handler.verifyRequest({
               headers: {
                 'content-type': 'application/x-www-form-urlencoded'
@@ -321,7 +321,7 @@ describe('JwtTokenHandler', function() {
               body: {
                 access_token: token.jwt
               }
-            }, function(err, claims) {
+            }, function (err, claims) {
               expect(err).to.be.null;
               expect(claims.sub).to.equal(token.subject);
               expect(claims.iss).to.equal(token.issuer);
@@ -333,9 +333,9 @@ describe('JwtTokenHandler', function() {
         });
 
 
-        describe('missing methods', function() {
+        describe('missing methods', function () {
 
-          it('should return invalid_request error without header method ', function(done) {
+          it('should return invalid_request error without header method ', function (done) {
             handler.verifyRequest({
               headers: {
                 authorization: 'BEARER ' + token.jwt
@@ -346,19 +346,19 @@ describe('JwtTokenHandler', function() {
                 JwtTokenHandler.methods.FORM_BODY,
               ]
             },
-            function(err, claims) {
-              expect(err).not.to.be.null;
-              expect(err.errorCode).to.equal('invalid_request');
-              expect(err.statusCode).to.equal(400)
-              expect(err.challenge).to.equal('Bearer realm="TEST", error="invalid_request", ' +
-                'error_description="Request must specify an access token via query parameter or form body parameter", ' +
-                'error_uri="https://tools.ietf.org/html/rfc6750"');
-              expect(claims).to.be.undefined;;
-              done();
-            });
+              function (err, claims) {
+                expect(err).not.to.be.null;
+                expect(err.errorCode).to.equal('invalid_request');
+                expect(err.statusCode).to.equal(400)
+                expect(err.challenge).to.equal('Bearer realm="TEST", error="invalid_request", ' +
+                  'error_description="Request must specify an access token via query parameter or form body parameter", ' +
+                  'error_uri="https://tools.ietf.org/html/rfc6750"');
+                expect(claims).to.be.undefined;;
+                done();
+              });
           });
 
-          it('should return invalid_request error without query method ', function(done) {
+          it('should return invalid_request error without query method ', function (done) {
             handler.verifyRequest({
               query: {
                 access_token: token.jwt
@@ -369,19 +369,19 @@ describe('JwtTokenHandler', function() {
                 JwtTokenHandler.methods.FORM_BODY,
               ]
             },
-            function(err, claims) {
-              expect(err).not.to.be.null;
-              expect(err.errorCode).to.equal('invalid_request');
-              expect(err.statusCode).to.equal(400)
-              expect(err.challenge).to.equal('Bearer realm="TEST", error="invalid_request", ' +
-                'error_description="Request must specify an access token via authorization header or form body parameter", ' +
-                'error_uri="https://tools.ietf.org/html/rfc6750"');
-              expect(claims).to.be.undefined;;
-              done();
-            });
+              function (err, claims) {
+                expect(err).not.to.be.null;
+                expect(err.errorCode).to.equal('invalid_request');
+                expect(err.statusCode).to.equal(400)
+                expect(err.challenge).to.equal('Bearer realm="TEST", error="invalid_request", ' +
+                  'error_description="Request must specify an access token via authorization header or form body parameter", ' +
+                  'error_uri="https://tools.ietf.org/html/rfc6750"');
+                expect(claims).to.be.undefined;;
+                done();
+              });
           });
 
-          it('should return invalid_request error without from_body method ', function(done) {
+          it('should return invalid_request error without from_body method ', function (done) {
             handler.verifyRequest({
               body: {
                 access_token: token.jwt
@@ -392,24 +392,24 @@ describe('JwtTokenHandler', function() {
                 JwtTokenHandler.methods.QUERY,
               ]
             },
-            function(err, claims) {
-              expect(err).not.to.be.null;
-              expect(err.errorCode).to.equal('invalid_request');
-              expect(err.statusCode).to.equal(400)
-              expect(err.challenge).to.equal('Bearer realm="TEST", error="invalid_request", ' +
-                'error_description="Request must specify an access token via authorization header or query parameter", ' +
-                'error_uri="https://tools.ietf.org/html/rfc6750"');
-              expect(claims).to.be.undefined;;
-              done();
-            });
+              function (err, claims) {
+                expect(err).not.to.be.null;
+                expect(err.errorCode).to.equal('invalid_request');
+                expect(err.statusCode).to.equal(400)
+                expect(err.challenge).to.equal('Bearer realm="TEST", error="invalid_request", ' +
+                  'error_description="Request must specify an access token via authorization header or query parameter", ' +
+                  'error_uri="https://tools.ietf.org/html/rfc6750"');
+                expect(claims).to.be.undefined;;
+                done();
+              });
           });
 
         })
 
-        describe('missing tokens', function() {
+        describe('missing tokens', function () {
 
-          it('should have invalid_request error', function(done) {
-            handler.verifyRequest({}, function(err, claims) {
+          it('should have invalid_request error', function (done) {
+            handler.verifyRequest({}, function (err, claims) {
               expect(err).not.to.be.null;
               expect(err.errorCode).to.equal('invalid_request');
               expect(err.statusCode).to.equal(400)
@@ -421,34 +421,34 @@ describe('JwtTokenHandler', function() {
             })
           });
 
-          it('should use audience as realm for challenge', function(done) {
+          it('should use audience as realm for challenge', function (done) {
             handler = new JwtTokenHandler({
               issuer: token.issuer,
               audience: token.audience,
               jwks: token.jwks
             });
-            handler.verifyRequest({}, function(err, claims) {
-                expect(err).not.to.be.null;
-                expect(err.errorCode).to.equal('invalid_request');
-                expect(err.statusCode).to.equal(400)
-                expect(err.challenge).to.equal('Bearer realm="' + token.audience + '", error="invalid_request", ' +
-                  'error_description="Request must specify an access token via authorization header, query parameter or form body parameter", ' +
-                  'error_uri="https://tools.ietf.org/html/rfc6750"');
-                expect(claims).to.be.undefined;
-                done();
+            handler.verifyRequest({}, function (err, claims) {
+              expect(err).not.to.be.null;
+              expect(err.errorCode).to.equal('invalid_request');
+              expect(err.statusCode).to.equal(400)
+              expect(err.challenge).to.equal('Bearer realm="' + token.audience + '", error="invalid_request", ' +
+                'error_description="Request must specify an access token via authorization header, query parameter or form body parameter", ' +
+                'error_uri="https://tools.ietf.org/html/rfc6750"');
+              expect(claims).to.be.undefined;
+              done();
             });
           });
 
         });
 
-        describe('with body with missing content-type', function() {
+        describe('with body with missing content-type', function () {
 
-          it('should have invalid_request error', function(done) {
+          it('should have invalid_request error', function (done) {
             handler.verifyRequest({
               body: {
                 access_token: token.jwt
               }
-            }, function(err, claims) {
+            }, function (err, claims) {
               expect(err).not.to.be.null;
               expect(err.errorCode).to.equal('invalid_request');
               expect(err.statusCode).to.equal(400)
@@ -462,9 +462,9 @@ describe('JwtTokenHandler', function() {
 
         });
 
-        describe('with body and query params', function() {
+        describe('with body and query params', function () {
 
-          it('should have invalid_request error', function(done) {
+          it('should have invalid_request error', function (done) {
             handler.verifyRequest({
               headers: {
                 'content-type': 'application/x-www-form-urlencoded'
@@ -475,7 +475,7 @@ describe('JwtTokenHandler', function() {
               query: {
                 access_token: token.jwt
               }
-            }, function(err, claims) {
+            }, function (err, claims) {
               expect(err).not.to.be.null;
               expect(err.errorCode).to.equal('invalid_request');
               expect(err.statusCode).to.equal(400)
@@ -489,9 +489,9 @@ describe('JwtTokenHandler', function() {
 
         });
 
-        describe('with query and authorization params', function() {
+        describe('with query and authorization params', function () {
 
-          it('should have invalid_request error', function(done) {
+          it('should have invalid_request error', function (done) {
             handler.verifyRequest({
               headers: {
                 authorization: 'BEARER' + token.jwt
@@ -499,7 +499,7 @@ describe('JwtTokenHandler', function() {
               query: {
                 access_token: token.jwt
               }
-            }, function(err, claims) {
+            }, function (err, claims) {
               expect(err).not.to.be.null;
               expect(err.errorCode).to.equal('invalid_request');
               expect(err.statusCode).to.equal(400)
@@ -513,9 +513,9 @@ describe('JwtTokenHandler', function() {
 
         });
 
-        describe('with body and authorization params', function() {
+        describe('with body and authorization params', function () {
 
-          it('should have invalid_request error', function(done) {
+          it('should have invalid_request error', function (done) {
             handler.verifyRequest({
               headers: {
                 authorization: 'BEARER' + token.jwt
@@ -523,7 +523,7 @@ describe('JwtTokenHandler', function() {
               body: {
                 access_token: token.jwt
               }
-            }, function(err, claims) {
+            }, function (err, claims) {
               expect(err).not.to.be.null;
               expect(err.errorCode).to.equal('invalid_request');
               expect(err.statusCode).to.equal(400)
@@ -537,14 +537,14 @@ describe('JwtTokenHandler', function() {
 
         });
 
-        describe('with invalid authorization scheme', function() {
+        describe('with invalid authorization scheme', function () {
 
-          it('should have invalid_request error', function(done) {
+          it('should have invalid_request error', function (done) {
             handler.verifyRequest({
               headers: {
                 authorization: 'OAUTH2' + token.jwt
               }
-            }, function(err, claims) {
+            }, function (err, claims) {
               expect(err).not.to.be.null;
               expect(err.errorCode).to.equal('invalid_request');
               expect(err.statusCode).to.equal(400)
@@ -564,9 +564,9 @@ describe('JwtTokenHandler', function() {
 
   });
 
-  describe('#verifyToken()', function() {
+  describe('#verifyToken()', function () {
 
-    describe('token with invalid JOSE header', function() {
+    describe('token with invalid JOSE header', function () {
       const handler = new JwtTokenHandler({
         issuer: 'https://as.example.com',
         audience: 'https://api.example.com',
@@ -574,10 +574,10 @@ describe('JwtTokenHandler', function() {
         jwks: fs.readFileSync(path.join(__dirname, 'keys.json'), 'utf8')
       });
 
-      it('should require JOSE header', function(done) {
+      it('should require JOSE header', function (done) {
         const token = '.eyJ2ZXIiOjEsImp0aSI6IkFULk1ydXZ0OHVUT1R2dThrMi11LTZaZDJsb3kyNG9PZkJuWFhEalhlQW5nV2ciLCJpc3MiOiJodHRwczovL2V4YW1wbGUub2t0YXByZXZpZXcuY29tL2FzL29yc0tNUXNTV1F2enlQWGJ6ME5ZIiwiYXVkIjoiQU5SWmh5RGg4SEJGTjVhYk42UmciLCJzdWIiOiIwMHU1aXZzdnI1MzFVNWRoajBoNyIsImlhdCI6MTQ2ODk0NTgzNCwiZXhwIjoxNDY4OTQ5NDM0LCJjaWQiOiJBTlJaaHlEaDhIQkZONWFiTjZSZyIsInVpZCI6IjAwdTVpdnN2cjUzMVU1ZGhqMGg3Iiwic2NwIjpbIm9wZW5pZCIsImVtYWlsIiwicHJvZmlsZSIsImFkZHJlc3MiLCJwaG9uZSJdLCJzdWJBbHROYW1lIjoia21jZ3Vpbm5lc3NAb2t0YS5jb20ifQ.';
         handler.verifyToken(token,
-          function(err, claims) {
+          function (err, claims) {
             expect(err).not.to.be.null;
             expect(err.errorCode).to.equal('invalid_token');
             expect(err.statusCode).to.equal(401)
@@ -589,10 +589,10 @@ describe('JwtTokenHandler', function() {
           })
       });
 
-      it('should require alg header', function(done) {
+      it('should require alg header', function (done) {
         const token = 'e30.eyJ2ZXIiOjEsImp0aSI6IkFULk1ydXZ0OHVUT1R2dThrMi11LTZaZDJsb3kyNG9PZkJuWFhEalhlQW5nV2ciLCJpc3MiOiJodHRwczovL2V4YW1wbGUub2t0YXByZXZpZXcuY29tL2FzL29yc0tNUXNTV1F2enlQWGJ6ME5ZIiwiYXVkIjoiQU5SWmh5RGg4SEJGTjVhYk42UmciLCJzdWIiOiIwMHU1aXZzdnI1MzFVNWRoajBoNyIsImlhdCI6MTQ2ODk0NTgzNCwiZXhwIjoxNDY4OTQ5NDM0LCJjaWQiOiJBTlJaaHlEaDhIQkZONWFiTjZSZyIsInVpZCI6IjAwdTVpdnN2cjUzMVU1ZGhqMGg3Iiwic2NwIjpbIm9wZW5pZCIsImVtYWlsIiwicHJvZmlsZSIsImFkZHJlc3MiLCJwaG9uZSJdLCJzdWJBbHROYW1lIjoia21jZ3Vpbm5lc3NAb2t0YS5jb20ifQ.';
         handler.verifyToken(token,
-          function(err, claims) {
+          function (err, claims) {
             expect(err).not.to.be.null;
             expect(err.errorCode).to.equal('invalid_token');
             expect(err.statusCode).to.equal(401)
@@ -604,10 +604,10 @@ describe('JwtTokenHandler', function() {
           })
       });
 
-      it('should reject "none" signature algorithm', function(done) {
+      it('should reject "none" signature algorithm', function (done) {
         const token = 'eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJ2ZXIiOjEsImp0aSI6IkFULk1ydXZ0OHVUT1R2dThrMi11LTZaZDJsb3kyNG9PZkJuWFhEalhlQW5nV2ciLCJpc3MiOiJodHRwczovL2V4YW1wbGUub2t0YXByZXZpZXcuY29tL2FzL29yc0tNUXNTV1F2enlQWGJ6ME5ZIiwiYXVkIjoiQU5SWmh5RGg4SEJGTjVhYk42UmciLCJzdWIiOiIwMHU1aXZzdnI1MzFVNWRoajBoNyIsImlhdCI6MTQ2ODk0NTgzNCwiZXhwIjoxNDY4OTQ5NDM0LCJjaWQiOiJBTlJaaHlEaDhIQkZONWFiTjZSZyIsInVpZCI6IjAwdTVpdnN2cjUzMVU1ZGhqMGg3Iiwic2NwIjpbIm9wZW5pZCIsImVtYWlsIiwicHJvZmlsZSIsImFkZHJlc3MiLCJwaG9uZSJdLCJzdWJBbHROYW1lIjoia21jZ3Vpbm5lc3NAb2t0YS5jb20ifQ.';
         handler.verifyToken(token,
-          function(err, claims) {
+          function (err, claims) {
             expect(err).not.to.be.null;
             expect(err.errorCode).to.equal('invalid_token');
             expect(err.statusCode).to.equal(401)
@@ -618,10 +618,10 @@ describe('JwtTokenHandler', function() {
           })
       });
 
-      it('should reject shared secret signature algorithm', function(done) {
+      it('should reject shared secret signature algorithm', function (done) {
         const token = 'eyJhbGciOiJIUzI1NiIsImtpZCI6IkM0TmdMMlFIVHpvRVJfbzEzTGJza2pYWk1RV1FoUVRZZzNvdFBHR1pHWFkifQ.eyJ2ZXIiOjEsImp0aSI6IkFULk1ydXZ0OHVUT1R2dThrMi11LTZaZDJsb3kyNG9PZkJuWFhEalhlQW5nV2ciLCJpc3MiOiJodHRwczovL2V4YW1wbGUub2t0YXByZXZpZXcuY29tL2FzL29yc0tNUXNTV1F2enlQWGJ6ME5ZIiwiYXVkIjoiQU5SWmh5RGg4SEJGTjVhYk42UmciLCJzdWIiOiIwMHU1aXZzdnI1MzFVNWRoajBoNyIsImlhdCI6MTQ2ODk0NTgzNCwiZXhwIjoxNDY4OTQ5NDM0LCJjaWQiOiJBTlJaaHlEaDhIQkZONWFiTjZSZyIsInVpZCI6IjAwdTVpdnN2cjUzMVU1ZGhqMGg3Iiwic2NwIjpbIm9wZW5pZCIsImVtYWlsIiwicHJvZmlsZSIsImFkZHJlc3MiLCJwaG9uZSJdLCJzdWJBbHROYW1lIjoia21jZ3Vpbm5lc3NAb2t0YS5jb20ifQ.f6RMEjYhjIMnxJr1xgJWBz_igYdN3hxxDPSOODUsJxD_Ud_w5tKVVLIAKIM70hZ1DFLytaIoRI71EvuKB3uUMh5AR0N_gvLZnamKdrKl9r5RD1WLbUL7sKm378b4KWW2n1gqZBXAn9Se_mdk1j0_6Dq63sc6qhjSn40VEINU6RV7uwP4OGo0RdFaVWGo14biMrxgGa38rlZc_k-p0fd8zL6nw4W5myrikqW-mF2Xf55B05Fec2GelBcqoyarnF5EiMU-6G4tO1TQC5LM8J0glqhRAkXBOjpAK8eTAKWYpIQY_7MuIt5VCvVQ9anBGJ2GMQWm_oy9thZaeItAhxthPw';
         handler.verifyToken(token,
-          function(err, claims) {
+          function (err, claims) {
             expect(err).not.to.be.null;
             expect(err.errorCode).to.equal('invalid_token');
             expect(err.statusCode).to.equal(401)
@@ -632,10 +632,10 @@ describe('JwtTokenHandler', function() {
           })
       });
 
-      it('should require kid', function(done) {
+      it('should require kid', function (done) {
         const token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXIiOjEsImp0aSI6IkFULk1ydXZ0OHVUT1R2dThrMi11LTZaZDJsb3kyNG9PZkJuWFhEalhlQW5nV2ciLCJpc3MiOiJodHRwczovL2V4YW1wbGUub2t0YXByZXZpZXcuY29tL2FzL29yc0tNUXNTV1F2enlQWGJ6ME5ZIiwiYXVkIjoiQU5SWmh5RGg4SEJGTjVhYk42UmciLCJzdWIiOiIwMHU1aXZzdnI1MzFVNWRoajBoNyIsImlhdCI6MTQ2ODk0NTgzNCwiZXhwIjoxNDY4OTQ5NDM0LCJjaWQiOiJBTlJaaHlEaDhIQkZONWFiTjZSZyIsInVpZCI6IjAwdTVpdnN2cjUzMVU1ZGhqMGg3Iiwic2NwIjpbIm9wZW5pZCIsImVtYWlsIiwicHJvZmlsZSIsImFkZHJlc3MiLCJwaG9uZSJdLCJzdWJBbHROYW1lIjoia21jZ3Vpbm5lc3NAb2t0YS5jb20ifQ.f6RMEjYhjIMnxJr1xgJWBz_igYdN3hxxDPSOODUsJxD_Ud_w5tKVVLIAKIM70hZ1DFLytaIoRI71EvuKB3uUMh5AR0N_gvLZnamKdrKl9r5RD1WLbUL7sKm378b4KWW2n1gqZBXAn9Se_mdk1j0_6Dq63sc6qhjSn40VEINU6RV7uwP4OGo0RdFaVWGo14biMrxgGa38rlZc_k-p0fd8zL6nw4W5myrikqW-mF2Xf55B05Fec2GelBcqoyarnF5EiMU-6G4tO1TQC5LM8J0glqhRAkXBOjpAK8eTAKWYpIQY_7MuIt5VCvVQ9anBGJ2GMQWm_oy9thZaeItAhxthPw';
         handler.verifyToken(token,
-          function(err, claims) {
+          function (err, claims) {
             expect(err).not.to.be.null;
             expect(err.errorCode).to.equal('invalid_token');
             expect(err.statusCode).to.equal(401)
@@ -649,11 +649,11 @@ describe('JwtTokenHandler', function() {
 
     });
 
-    describe('id_token', function() {
+    describe('id_token', function () {
 
-      describe('with missing signature keys', function() {
+      describe('with missing signature keys', function () {
 
-        it('should not resolve a signing key', function(done) {
+        it('should not resolve a signing key', function (done) {
 
           handler = new JwtTokenHandler({
             issuer: tokens.id_token.issuer,
@@ -662,7 +662,7 @@ describe('JwtTokenHandler', function() {
             jwks: fs.readFileSync(path.join(__dirname, 'refresh-keys.json'), 'utf8')
           });
 
-          handler.verifyToken(tokens.id_token.jwt, function(err, claims) {
+          handler.verifyToken(tokens.id_token.jwt, function (err, claims) {
             expect(err).not.to.be.null;
             expect(err.errorCode).to.equal('invalid_token');
             expect(err.statusCode).to.equal(401)
@@ -675,9 +675,9 @@ describe('JwtTokenHandler', function() {
 
       });
 
-      describe('with invalid signature keys', function() {
+      describe('with invalid signature keys', function () {
 
-        it('should reject token signature', function(done) {
+        it('should reject token signature', function (done) {
 
           handler = new JwtTokenHandler({
             issuer: tokens.id_token.issuer,
@@ -691,7 +691,7 @@ describe('JwtTokenHandler', function() {
             .get(jwksPath)
             .replyWithFile(200, path.join(__dirname, 'invalid-signature-keys.json'));
 
-          handler.verifyToken(tokens.id_token.jwt, function(err, claims) {
+          handler.verifyToken(tokens.id_token.jwt, function (err, claims) {
             expect(err).not.to.be.null;
             expect(err.errorCode).to.equal('invalid_token');
             expect(err.statusCode).to.equal(401)
@@ -706,13 +706,14 @@ describe('JwtTokenHandler', function() {
 
     });
 
-    describe('access_token', function() {
+    describe('access_token', function () {
 
       const token = tokens.access_token;
+      const token_audience = tokens.access_token_array_aud;
       var clock;
       var handler;
 
-      beforeEach(function() {
+      beforeEach(function () {
         clock = sinon.useFakeTimers((token.expiresAt - 60) * 1000);
         nock.cleanAll();
         nock(baseUrl)
@@ -732,9 +733,9 @@ describe('JwtTokenHandler', function() {
         clock.restore();
       });
 
-      describe('with missing signature keys', function() {
+      describe('with missing signature keys', function () {
 
-        it('should not resolve a signing key', function(done) {
+        it('should not resolve a signing key', function (done) {
 
           handler = new JwtTokenHandler({
             issuer: tokens.access_token.issuer,
@@ -748,7 +749,7 @@ describe('JwtTokenHandler', function() {
             .get(jwksPath)
             .replyWithFile(200, path.join(__dirname, 'refresh-keys.json'));
 
-          handler.verifyToken(tokens.access_token.jwt, function(err, claims) {
+          handler.verifyToken(tokens.access_token.jwt, function (err, claims) {
             expect(err).not.to.be.null;
             expect(err.errorCode).to.equal('invalid_token');
             expect(err.statusCode).to.equal(401)
@@ -761,9 +762,9 @@ describe('JwtTokenHandler', function() {
 
       });
 
-      describe('with invalid signature keys', function() {
+      describe('with invalid signature keys', function () {
 
-        it('should reject token signature', function(done) {
+        it('should reject token signature', function (done) {
 
           handler = new JwtTokenHandler({
             issuer: tokens.access_token.issuer,
@@ -777,7 +778,7 @@ describe('JwtTokenHandler', function() {
             .get(jwksPath)
             .replyWithFile(200, path.join(__dirname, 'invalid-signature-keys.json'));
 
-          handler.verifyToken(tokens.access_token.jwt, function(err, claims) {
+          handler.verifyToken(tokens.access_token.jwt, function (err, claims) {
             expect(err).not.to.be.null;
             expect(err.errorCode).to.equal('invalid_token');
             expect(err.statusCode).to.equal(401)
@@ -790,11 +791,11 @@ describe('JwtTokenHandler', function() {
 
       });
 
-      describe('with valid scoped token', function() {
+      describe('with valid scoped token', function () {
 
-        it('should have single scope', function(done) {
-          handler.verifyToken(token.jwt, { issuer: token.issuer, audience: token.audience, scopes: ['email'] } ,
-            function(err, claims) {
+        it('should have single scope', function (done) {
+          handler.verifyToken(token.jwt, { issuer: token.issuer, audience: token.audience, scopes: ['email'] },
+            function (err, claims) {
               expect(err).to.be.null;
               expect(claims.sub).to.equal(token.subject);
               expect(claims.iss).to.equal(token.issuer);
@@ -807,9 +808,9 @@ describe('JwtTokenHandler', function() {
             })
         });
 
-        it('should have multiple scopes', function(done) {
+        it('should have multiple scopes', function (done) {
           handler.verifyToken(token.jwt, { issuer: token.issuer, audience: token.audience, scopes: ['email', 'phone'] },
-            function(err, claims) {
+            function (err, claims) {
               expect(err).to.be.null;
               expect(claims.sub).to.equal(token.subject);
               expect(claims.iss).to.equal(token.issuer);
@@ -820,21 +821,72 @@ describe('JwtTokenHandler', function() {
             })
         });
 
+
+      });
+      describe('with valid multiple audience token', function () {
+        const customtoken = {
+          jwt: 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjUyMDUzMTlhZjNmMWU5ZWJlMmY3Y2M3MmZiMTllMGJmIiwidHlwIjoiSldUIn0.eyJuYmYiOjE1NzA2MzIzMDcsImV4cCI6MTU3MDYzNTkwNywiaXNzIjoiaHR0cHM6Ly9qcHByb2plY3QuYXp1cmV3ZWJzaXRlcy5uZXQvc3NvIiwiYXVkIjpbImh0dHBzOi8vanBwcm9qZWN0LmF6dXJld2Vic2l0ZXMubmV0L3Nzby9yZXNvdXJjZXMiLCJqcF9hcGkiXSwiY2xpZW50X2lkIjoiU3dhZ2dlciIsInN1YiI6Ijc0MmYyMzk2LTg1N2MtNGI0Yy01NWExLTA4ZDYzMTczMWIzZCIsImF1dGhfdGltZSI6MTU3MDYzMjMwNywiaWRwIjoiR29vZ2xlIiwiaXM0LXJpZ2h0cyI6Im1hbmFnZXIiLCJ1c2VybmFtZSI6ImJydW5vIiwiZW1haWwiOiJiaGRlYnJpdG9AZ21haWwuY29tIiwic2NvcGUiOlsianBfYXBpLnVzZXIiLCJqcF9hcGkuaXM0Il0sImFtciI6WyJleHRlcm5hbCJdfQ.bZtLrqZS0Jdt7_lCOsn_w6aWpfi56g9fYus_keJseATHoP6UMI0AjSE-91Est38XVYAPc7tpyw9ajDqKtxGzQFHXTx16WhIQQG1InO48_uGWYjfxb1lpCrrYw738AU0YMWBjpKPBQ1cV-OuWkJXw48j4-0yLM3LetZht5QuExn-uTsuMJJ9TzR7w9kEwp0sMbqiTJoac9mQN6ZD7niNN-OcFCob4uZbbsePeEnjUeLQFAmcF4bfogWxB3HItU8oB-HYFHdb9-4lZGQZ0-rSkH_BAL0soGi_99vfF7de40bOQdTpqYa9kOrmRJbNjumix0qfXiOakh-GmMkyQFeeB2A',
+          issuer: 'https://jpproject.azurewebsites.net/sso',
+          kid: '5205319af3f1e9ebe2f7cc72fb19e0bf',
+          expiresAt: 1570635907,
+          audience: 'jp_api',
+          subject: '742f2396-857c-4b4c-55a1-08d631731b3d',
+          email: 'bhdebrito@gmail.com'
+        };
+        const handler = new JwtTokenHandler({
+          issuer: 'https://jpproject.azurewebsites.net/sso',
+          audience:  [
+            "https://jpproject.azurewebsites.net/sso/resources",
+            "jp_api"
+          ],
+          jwks: {
+            "keys": [
+                {
+                    "kty": "RSA",
+                    "use": "sig",
+                    "kid": "5205319af3f1e9ebe2f7cc72fb19e0bf",
+                    "e": "AQAB",
+                    "n": "ySVkuqHxluPs_W7gIJXl2GlWAckCtkVusT4J8Shsax2iohXmdA1rRQQN1q2dKFMqBpS8j9WOaHo7wlQE1LQI6335MqQhBrIOiEfib7Nv371jy8XOLs3vX2O9TjTuxUUlPFy1I0ESfGNK9V6RN3JMRKA2TZKAs-7Fgv_DQW63PyL_ziXTvUG4PbjYaP-kqW2VCLUJqYq_K3ZHXdMtOgn7Ja_gwleMjJSScchgVNeeLg6b9cctmjiLtKAcr-ptEZTbw-rrC_zj7QcqRJAw5YupBJFtQJERTpannWYixnSQH-akUODidyN4Un6KTCMS1cVYjlMhxUREX3ehoX1RdbnzaQ",
+                    "alg": "RS256"
+                }
+            ]
+        }
+        });
+
+        it('should have single audience', function (done) {
+          handler.verifyToken(customtoken.jwt, { issuer: customtoken.issuer, audience: customtoken.audience, scopes: ['jp_api.user'] , ignoreNotBefore: true},
+            function (err, claims) {
+              expect(err).to.be.null;
+              expect(claims.sub).to.equal(customtoken.subject);
+              expect(claims.iss).to.equal(customtoken.issuer);
+              expect(claims.aud).to.contains(customtoken.audience);
+              expect(claims.hasScopes('jp_api.user')).to.be.true;
+              expect(claims.hasScopes(['jp_api.user'])).to.be.true;
+              expect(claims.hasScopes('missing')).to.be.false;
+              expect(claims.hasScopes(['missing'])).to.be.false;
+              done();
+            })
+        });
+
+
+
       });
     });
+
+
 
     /*
       Tests should be valid for both id_token and access_token
      */
-    Object.keys(tokens).forEach(function(tokenType) {
+    Object.keys(tokens).forEach(function (tokenType) {
 
-      describe(tokenType, function() {
+      describe(tokenType, function () {
 
         const token = tokens[tokenType];
         var clock;
         var handler;
 
-        beforeEach(function() {
+        beforeEach(function () {
           clock = sinon.useFakeTimers((token.expiresAt - 60) * 1000);
           nock.cleanAll();
           nock(baseUrl)
@@ -853,10 +905,10 @@ describe('JwtTokenHandler', function() {
           clock.restore();
         });
 
-        describe('with valid token', function() {
+        describe('with valid token', function () {
 
-          it('should have subject, issuer, and audience claims', function(done) {
-            handler.verifyToken(token.jwt, function(err, claims) {
+          it('should have subject, issuer, and audience claims', function (done) {
+            handler.verifyToken(token.jwt, function (err, claims) {
               expect(err).to.be.null;
               expect(claims.sub).to.equal(token.subject);
               expect(claims.iss).to.equal(token.issuer);
@@ -867,7 +919,7 @@ describe('JwtTokenHandler', function() {
 
         });
 
-        describe('with valid token and options', function() {
+        describe('with valid token and options', function () {
 
           handler = new JwtTokenHandler({
             issuer: 'https://example.com/invalid/issuer',
@@ -877,8 +929,8 @@ describe('JwtTokenHandler', function() {
             scopesClaimName: scopesClaimName
           });
 
-          it('should have subject, issuer, and audience claims', function(done) {
-            handler.verifyToken(token.jwt, { issuer: token.issuer, audience: token.audience }, function(err, claims) {
+          it('should have subject, issuer, and audience claims', function (done) {
+            handler.verifyToken(token.jwt, { issuer: token.issuer, audience: token.audience }, function (err, claims) {
               expect(err).to.be.null;
               expect(claims.sub).to.equal(token.subject);
               expect(claims.iss).to.equal(token.issuer);
@@ -887,9 +939,9 @@ describe('JwtTokenHandler', function() {
             });
           });
 
-          it('should return insufficient_scope error for single scope', function(done) {
+          it('should return insufficient_scope error for single scope', function (done) {
             handler.verifyToken(token.jwt, { scopes: ['missing'] },
-              function(err, claims) {
+              function (err, claims) {
                 expect(err).not.to.be.null;
                 expect(err.errorCode).to.equal('insufficient_scope');
                 expect(err.statusCode).to.equal(403)
@@ -902,9 +954,9 @@ describe('JwtTokenHandler', function() {
               })
           });
 
-          it('should return insufficient_scope error for multiple scopes', function(done) {
+          it('should return insufficient_scope error for multiple scopes', function (done) {
             handler.verifyToken(token.jwt, { scopes: ['missing', 'email', 'foo'] },
-              function(err, claims) {
+              function (err, claims) {
                 expect(err).not.to.be.null;
                 expect(err.errorCode).to.equal('insufficient_scope');
                 expect(err.statusCode).to.equal(403)
@@ -918,15 +970,15 @@ describe('JwtTokenHandler', function() {
           });
         });
 
-        describe('with invalid token', function() {
+        describe('with invalid token', function () {
 
-          it('should use audience as realm for challenge', function(done) {
+          it('should use audience as realm for challenge', function (done) {
             handler = new JwtTokenHandler({
               issuer: 'https://example.com/invalid/issuer',
               audience: token.audience,
               jwks: token.jwks
             });
-            handler.verifyToken(token.jwt, function(err, claims) {
+            handler.verifyToken(token.jwt, function (err, claims) {
               expect(err).not.to.be.null;
               expect(err.errorCode).to.equal('invalid_token');
               expect(err.statusCode).to.equal(401)
@@ -939,9 +991,9 @@ describe('JwtTokenHandler', function() {
             });
           });
 
-          it('should be expired', function(done) {
+          it('should be expired', function (done) {
             clock.restore()
-            handler.verifyToken(token.jwt, function(err, claims) {
+            handler.verifyToken(token.jwt, function (err, claims) {
               expect(err).not.to.be.null;
               expect(err.errorCode).to.equal('invalid_token');
               expect(err.statusCode).to.equal(401)
@@ -954,7 +1006,7 @@ describe('JwtTokenHandler', function() {
             })
           });
 
-          it('should not have valid issuer', function(done) {
+          it('should not have valid issuer', function (done) {
             handler = new JwtTokenHandler({
               issuer: 'https://example.com/invalid/issuer',
               audience: token.audience,
@@ -962,7 +1014,7 @@ describe('JwtTokenHandler', function() {
               jwks: token.jwks
             });
 
-            handler.verifyToken(token.jwt, function(err, claims) {
+            handler.verifyToken(token.jwt, function (err, claims) {
               expect(err).not.to.be.null;
               expect(err.errorCode).to.equal('invalid_token');
               expect(err.statusCode).to.equal(401)
@@ -975,7 +1027,7 @@ describe('JwtTokenHandler', function() {
             })
           });
 
-          it('should not have valid audience', function(done) {
+          it('should not have valid audience', function (done) {
             handler = new JwtTokenHandler({
               issuer: token.issuer,
               audience: 'urn:invalid:audience',
@@ -983,7 +1035,7 @@ describe('JwtTokenHandler', function() {
               jwks: token.jwks
             });
 
-            handler.verifyToken(token.jwt, function(err, claims) {
+            handler.verifyToken(token.jwt, function (err, claims) {
               expect(err).not.to.be.null;
               expect(err.errorCode).to.equal('invalid_token');
               expect(err.statusCode).to.equal(401)
@@ -998,11 +1050,11 @@ describe('JwtTokenHandler', function() {
         });
 
 
-        describe('with invalid token and override options', function() {
+        describe('with invalid token and override options', function () {
 
-          it('should not have valid issuer', function(done) {
+          it('should not have valid issuer', function (done) {
             handler.verifyToken(token.jwt, { issuer: 'https://example.com/invalid/issuer' },
-              function(err, claims) {
+              function (err, claims) {
                 expect(err).not.to.be.null;
                 expect(err.errorCode).to.equal('invalid_token');
                 expect(err.statusCode).to.equal(401)
@@ -1015,8 +1067,8 @@ describe('JwtTokenHandler', function() {
               })
           });
 
-          it('should not have valid audience', function(done) {
-            handler.verifyToken(token.jwt, { audience: 'urn:invalid:audience' }, function(err, claims) {
+          it('should not have valid audience', function (done) {
+            handler.verifyToken(token.jwt, { audience: 'urn:invalid:audience' }, function (err, claims) {
               expect(err).not.to.be.null;
               expect(err.errorCode).to.equal('invalid_token');
               expect(err.statusCode).to.equal(401)
